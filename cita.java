@@ -1,41 +1,51 @@
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.util.Date;
 
-
-public class Cita {
-    private final LocalDate fecha;
-    private final LocalTime hora;
-    private final String motivo;
-    private EstadoCita estado;
+public class CitaMedica {
+    private Date fecha;
+    private String hora;
+    private String motivo;
+    private String estado;
     private Paciente paciente;
     private Doctor doctor;
 
-    public Cita(LocalDate fecha, LocalTime hora, String motivo, Paciente paciente, Doctor doctor) {
+    public CitaMedica(Date fecha, String hora, String motivo, String estado, Paciente paciente, Doctor doctor) {
         this.fecha = fecha;
         this.hora = hora;
         this.motivo = motivo;
+        this.estado = estado;
         this.paciente = paciente;
         this.doctor = doctor;
-        this.estado = EstadoCita.PROGRAMADA;
     }
 
-    public LocalDate getFecha() {
+    public Date getFecha() {
         return fecha;
     }
 
-    public LocalTime getHora() {
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
+
+    public String getHora() {
         return hora;
+    }
+
+    public void setHora(String hora) {
+        this.hora = hora;
     }
 
     public String getMotivo() {
         return motivo;
     }
 
-    public EstadoCita getEstado() {
+    public void setMotivo(String motivo) {
+        this.motivo = motivo;
+    }
+
+    public String getEstado() {
         return estado;
     }
 
-    public void setEstado(EstadoCita estado) {
+    public void setEstado(String estado) {
         this.estado = estado;
     }
 
@@ -43,13 +53,11 @@ public class Cita {
         return paciente;
     }
 
-    public void setPaciente(Paciente paciente) {
-        this.paciente = paciente;
-    }
-
     public Doctor getDoctor() {
         return doctor;
     }
+}
+
 
     public void setDoctor(Doctor doctor) {
         this.doctor = doctor;
