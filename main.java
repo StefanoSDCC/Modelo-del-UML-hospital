@@ -1,9 +1,5 @@
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-enum EstadoCita {
-    PROGRAMADA,
-    REALIZADA,
-    CANCELADA
+public interface GestionCitas {
+    void programarCita(CitaMedica cita);
+    void cancelarCita(CitaMedica cita);
+    void realizarCita(CitaMedica cita);
 }
