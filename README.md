@@ -1,3 +1,4 @@
+![image](https://github.com/StefanoSDCC/Modelo-del-UML-hospital/assets/166523262/694d4e46-ecb5-4cb2-8049-5faf7542a48b)
 public interface GestionCitas {
     void programarCita(CitaMedica cita);
     void cancelarCita(CitaMedica cita);
