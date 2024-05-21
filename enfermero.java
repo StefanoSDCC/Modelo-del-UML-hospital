@@ -1,21 +1,19 @@
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class Enfermero extends Persona {
-    private List<Paciente> pacientesAsignados;
+    private List<Paciente> pacientes;
 
-    public Enfermero(String nombre, String identificacion, String direccion) {
-        super(nombre, identificacion, direccion);
-        pacientesAsignados = new ArrayList<>();
+    public Enfermero(String nombre, String id, String direccion) {
+        super(nombre, id, direccion);
+        this.pacientes = new ArrayList<>();
     }
 
-  
-    public List<Paciente> getPacientesAsignados() {
-        return pacientesAsignados;
+    public List<Paciente> getPacientes() {
+        return pacientes;
     }
 
-    public void asignarPaciente(Paciente paciente) {
-        pacientesAsignados.add(paciente);
+    public void addPaciente(Paciente paciente) {
+        this.pacientes.add(paciente);
     }
 }
