@@ -1,24 +1,18 @@
-# Modelo-del-UML-hospital
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-enum EstadoCita {
-    PROGRAMADA,
-    REALIZADA,
-    CANCELADA
+public interface GestionCitas {
+    void programarCita(CitaMedica cita);
+    void cancelarCita(CitaMedica cita);
+    void realizarCita(CitaMedica cita);
 }
-public class Persona {
-    private String nombre;
-    private String identificacion;
-    private String direccion;
+public abstract class Persona {
+    protected String nombre;
+    protected final String id;
+    protected String direccion;
 
-    public Persona(String nombre, String identificacion, String direccion) {
+    public Persona(String nombre, String id, String direccion) {
         this.nombre = nombre;
-        this.identificacion = identificacion;
+        this.id = id;
         this.direccion = direccion;
     }
-
 
     public String getNombre() {
         return nombre;
@@ -28,12 +22,8 @@ public class Persona {
         this.nombre = nombre;
     }
 
-    public String getIdentificacion() {
-        return identificacion;
-    }
-
-    public void setIdentificacion(String identificacion) {
-        this.identificacion = identificacion;
+    public String getId() {
+        return id;
     }
 
     public String getDireccion() {
@@ -44,82 +34,139 @@ public class Persona {
         this.direccion = direccion;
     }
 }
-public class Doctor extends Persona {
-    private String especialidad;
+import java.util.ArrayList;
+import java.util.List;
 
-    public Doctor(String nombre, String identificacion, String direccion, String especialidad) {
-        super(nombre, identificacion, direccion);
+public class Doctor extends Persona implements GestionCitas {
+    private final String especialidad;
+    private List<CitaMedica> citas;
+
+    public Doctor(String nombre, String id, String direccion, String especialidad) {
+        super(nombre, id, direccion);
         this.especialidad = especialidad;
+        this.citas = new ArrayList<>();
     }
-
 
     public String getEspecialidad() {
         return especialidad;
     }
 
-    public void setEspecialidad(String especialidad) {
-        this.especialidad = especialidad;
+    public List<CitaMedica> getCitas() {
+        return citas;
+    }
+
+    @Override
+    public void programarCita(CitaMedica cita) {
+        cita.setEstado("programada");
+        citas.add(cita);
+    }
+
+    @Override
+    public void cancelarCita(CitaMedica cita) {
+        cita.setEstado("cancelada");
+    }
+
+    @Override
+    public void realizarCita(CitaMedica cita) {
+        cita.setEstado("realizada");
     }
 }
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class Enfermero extends Persona {
-    private List<Paciente> pacientesAsignados;
+    private List<Paciente> pacientes;
 
-    public Enfermero(String nombre, String identificacion, String direccion) {
-        super(nombre, identificacion, direccion);
-        pacientesAsignados = new ArrayList<>();
+    public Enfermero(String nombre, String id, String direccion) {
+        super(nombre, id, direccion);
+        this.pacientes = new ArrayList<>();
     }
 
-
-    public List<Paciente> getPacientesAsignados() {
-        return pacientesAsignados;
+    public List<Paciente> getPacientes() {
+        return pacientes;
     }
 
-    public void asignarPaciente(Paciente paciente) {
-        pacientesAsignados.add(paciente);
+    public void addPaciente(Paciente paciente) {
+        this.pacientes.add(paciente);
     }
 }
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
+public class Paciente extends Persona {
+    private ExpedienteMedico expediente;
+    private List<CitaMedica> citas;
 
-public class Cita {
-    private final LocalDate fecha;
-    private final LocalTime hora;
-    private final String motivo;
-    private EstadoCita estado;
+    public Paciente(String nombre, String id, String direccion, ExpedienteMedico expediente) {
+        super(nombre, id, direccion);
+        this.expediente = expediente;
+        this.citas = new ArrayList<>();
+    }
+
+    public ExpedienteMedico getExpediente() {
+        return expediente;
+    }
+
+    public void setExpediente(ExpedienteMedico expediente) {
+        this.expediente = expediente;
+    }
+
+    public List<CitaMedica> getCitas() {
+        return citas;
+    }
+
+    public void addCita(CitaMedica cita) {
+        this.citas.add(cita);
+    }
+}
+import java.util.Date;
+
+public class CitaMedica {
+    private Date fecha;
+    private String hora;
+    private String motivo;
+    private String estado;
     private Paciente paciente;
     private Doctor doctor;
 
-    public Cita(LocalDate fecha, LocalTime hora, String motivo, Paciente paciente, Doctor doctor) {
+    public CitaMedica(Date fecha, String hora, String motivo, String estado, Paciente paciente, Doctor doctor) {
         this.fecha = fecha;
         this.hora = hora;
         this.motivo = motivo;
+        this.estado = estado;
         this.paciente = paciente;
         this.doctor = doctor;
-        this.estado = EstadoCita.PROGRAMADA;
     }
 
-    public LocalDate getFecha() {
+    public Date getFecha() {
         return fecha;
     }
 
-    public LocalTime getHora() {
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
+
+    public String getHora() {
         return hora;
+    }
+
+    public void setHora(String hora) {
+        this.hora = hora;
     }
 
     public String getMotivo() {
         return motivo;
     }
 
-    public EstadoCita getEstado() {
+    public void setMotivo(String motivo) {
+        this.motivo = motivo;
+    }
+
+    public String getEstado() {
         return estado;
     }
 
-    public void setEstado(EstadoCita estado) {
+    public void setEstado(String estado) {
         this.estado = estado;
     }
 
@@ -127,36 +174,54 @@ public class Cita {
         return paciente;
     }
 
-    public void setPaciente(Paciente paciente) {
-        this.paciente = paciente;
-    }
-
     public Doctor getDoctor() {
         return doctor;
     }
-
-    public void setDoctor(Doctor doctor) {
-        this.doctor = doctor;
-    }
 }
-import java.util.ArrayList;
 import java.util.List;
 
+public class ExpedienteMedico {
+    private List<String> historialMedico;
+    private List<String> diagnosticos;
+    private List<String> tratamientos;
+    private List<String> prescripciones;
 
-public class Paciente extends Persona {
-    private List<Cita> citas;
-
-    public Paciente(String nombre, String identificacion, String direccion) {
-        super(nombre, identificacion, direccion);
-        citas = new ArrayList<>();
+    public ExpedienteMedico(List<String> historialMedico, List<String> diagnosticos, List<String> tratamientos, List<String> prescripciones) {
+        this.historialMedico = historialMedico;
+        this.diagnosticos = diagnosticos;
+        this.tratamientos = tratamientos;
+        this.prescripciones = prescripciones;
     }
 
-
-    public List<Cita> getCitas() {
-        return citas;
+    public List<String> getHistorialMedico() {
+        return historialMedico;
     }
 
-    public void agregarCita(Cita cita) {
-        citas.add(cita);
+    public void setHistorialMedico(List<String> historialMedico) {
+        this.historialMedico = historialMedico;
+    }
+
+    public List<String> getDiagnosticos() {
+        return diagnosticos;
+    }
+
+    public void setDiagnosticos(List<String> diagnosticos) {
+        this.diagnosticos = diagnosticos;
+    }
+
+    public List<String> getTratamientos() {
+        return tratamientos;
+    }
+
+    public void setTratamientos(List<String> tratamientos) {
+        this.tratamientos = tratamientos;
+    }
+
+    public List<String> getPrescripciones() {
+        return prescripciones;
+    }
+
+    public void setPrescripciones(List<String> prescripciones) {
+        this.prescripciones = prescripciones;
     }
 }
